@@ -1,0 +1,206 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  @font-face { font-family: I; src: url("file:///usr/share/fonts/opentype/inter/Inter-Bold.otf"); font-weight: 700; }
+  @font-face { font-family: I; src: url("file:///usr/share/fonts/opentype/inter/Inter-SemiBold.otf"); font-weight: 600; }
+  @font-face { font-family: I; src: url("file:///usr/share/fonts/opentype/inter/Inter-Medium.otf"); font-weight: 500; }
+  @font-face { font-family: I; src: url("file:///usr/share/fonts/opentype/inter/Inter-Black.otf"); font-weight: 900; }
+  :root { --bg:#0A0B0F; --fg:#F5F6F8; --mut:#8A8F9C; --acc:#33E1B0; --warn:#FF5A5F; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:1080px; height:1920px; background:var(--bg); overflow:hidden; font-family:I, sans-serif; color:var(--fg); }
+  .abs { position:absolute; }
+  .scene { position:absolute; inset:0; opacity:0; }
+  .center { left:0; right:0; text-align:center; }
+  #glow { position:absolute; width:1400px; height:1400px; left:-160px; top:250px; border-radius:50%;
+          background:radial-gradient(circle, rgba(51,225,176,.16), rgba(51,225,176,0) 60%); }
+  .big { font-weight:900; letter-spacing:-3px; line-height:1.02; }
+  .acc { color:var(--acc); }
+  .warn { color:var(--warn); }
+  .pill { display:inline-block; padding:18px 34px; border-radius:999px; font-weight:700; font-size:46px; background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.14); }
+  /* phone */
+  #phone { left:230px; top:470px; width:620px; height:1080px; border-radius:64px; background:#16181F; border:10px solid #2A2D37; overflow:hidden; box-shadow:0 40px 120px rgba(0,0,0,.6); }
+  .notch { position:absolute; top:14px; left:50%; width:150px; height:34px; margin-left:-75px; background:#000; border-radius:20px; z-index:5; }
+  .screen { position:absolute; inset:0; padding:76px 30px 30px; background:#FAFAFA; color:#111; }
+  .search { height:64px; border-radius:16px; background:#EDEEF1; display:flex; align-items:center; padding:0 22px; font-size:28px; font-weight:500; color:#555; gap:14px; }
+  .caret { width:3px; height:32px; background:#111; }
+  .prof { margin-top:30px; }
+  .row { display:flex; align-items:center; gap:28px; }
+  .av { width:130px; height:130px; border-radius:50%; flex:none; }
+  .stats { display:flex; flex:1; justify-content:space-around; text-align:center; }
+  .stats b { display:block; font-size:34px; font-weight:700; }
+  .stats span { font-size:22px; color:#666; font-weight:500; }
+  .name { font-size:28px; font-weight:700; margin-top:18px; }
+  .bio { font-size:23px; color:#555; margin-top:6px; font-weight:500; line-height:1.35; }
+  .btn { margin-top:20px; height:56px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:600; }
+  .grid { margin-top:22px; display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+  .tile { aspect-ratio:1/1.25; position:relative; overflow:hidden; display:flex; align-items:flex-end; padding:10px; font-size:19px; font-weight:700; color:#fff; line-height:1.15; }
+  .tile i { position:absolute; top:10px; right:10px; font-style:normal; font-size:18px; }
+  .empty { background:#F0F0F2; border:2px dashed #D6D7DC; }
+  .old { background:#C9CBD1; color:#6b6e78; }
+  .badge { position:absolute; padding:14px 26px; border-radius:16px; font-weight:800; font-size:34px; }
+  /* cards */
+  .card { position:absolute; left:140px; width:800px; height:170px; border-radius:36px; background:#14171E; border:2px solid #262A35; display:flex; align-items:center; gap:34px; padding:0 44px; font-size:52px; font-weight:800; }
+  .num { width:84px; height:84px; border-radius:24px; background:var(--acc); color:#04120D; display:flex; align-items:center; justify-content:center; font-size:42px; font-weight:900; flex:none; }
+  .cta-btn { left:140px; width:800px; height:150px; border-radius:40px; background:var(--acc); color:#04120D; display:flex; align-items:center; justify-content:center; font-size:56px; font-weight:900; }
+  .wm { font-weight:900; letter-spacing:10px; font-size:34px; }
+</style></head>
+<body>
+<div id="glow"></div>
+
+<!-- S1 HOOK -->
+<div class="scene" id="s1">
+  <div class="abs center" style="top:620px">
+    <div id="s1a" class="pill" style="margin-bottom:60px">🦷&nbsp; DENTAL CLINIC OWNERS</div>
+  </div>
+  <div class="abs center big" id="s1b" style="top:780px;font-size:170px">Ek<br><span class="acc">sawaal.</span></div>
+</div>
+
+<!-- S2/S3 PHONE -->
+<div class="scene" id="sp">
+  <div class="abs center big" id="capA" style="top:215px;font-size:80px;letter-spacing:-2px">Patient ne aapko<br><span class="acc">search kiya…</span></div>
+  <div class="abs center big" id="capB" style="top:215px;font-size:80px;letter-spacing:-2px;opacity:0">Competitor yahan hai.<br><span class="warn">Aap?</span></div>
+
+  <div id="phone" class="abs">
+    <div class="notch"></div>
+    <!-- weak profile -->
+    <div class="screen" id="weak">
+      <div class="search"><span>⌕</span><span id="typed"></span><span class="caret" id="caret"></span></div>
+      <div class="prof" id="weakProf" style="opacity:0">
+        <div class="row">
+          <div class="av" style="background:#D5D7DC"></div>
+          <div class="stats"><div><b>3</b><span>posts</span></div><div><b>214</b><span>followers</span></div><div><b>51</b><span>following</span></div></div>
+        </div>
+        <div class="name">Aapka Clinic</div>
+        <div class="bio">Dental clinic</div>
+        <div class="btn" style="background:#EDEEF1">Follow</div>
+        <div class="grid">
+          <div class="tile old">Eid Mubarak<br>2023</div>
+          <div class="tile old">Clinic open<br>2023</div>
+          <div class="tile old">Timings<br>2022</div>
+          <div class="tile empty"></div><div class="tile empty"></div><div class="tile empty"></div>
+        </div>
+      </div>
+      <div class="badge" id="lastPost" style="left:60px;top:880px;background:#111;color:#fff;opacity:0">Last post: <span class="warn">2 saal pehle</span></div>
+    </div>
+    <!-- strong profile -->
+    <div class="screen" id="strong" style="transform:translateX(100%)">
+      <div class="search"><span>⌕</span><span>competitor dental</span></div>
+      <div class="prof">
+        <div class="row">
+          <div class="av" style="background:conic-gradient(#33E1B0,#3D7BFF,#B84DFF,#33E1B0);padding:6px"><div style="width:100%;height:100%;border-radius:50%;background:#fff;border:5px solid #fff;background-clip:content-box;background-color:#1E3A5F"></div></div>
+          <div class="stats"><div><b>486</b><span>posts</span></div><div><b>18.2K</b><span>followers</span></div><div><b>320</b><span>following</span></div></div>
+        </div>
+        <div class="name">Competitor Dental Care</div>
+        <div class="bio">Smile makeovers · Implants · Braces<br>★★★★★ 1,200+ patient reviews</div>
+        <div class="btn" style="background:#3D7BFF;color:#fff">Book Appointment</div>
+        <div class="grid" id="sgrid">
+          <div class="tile" style="background:linear-gradient(160deg,#1E3A5F,#3D7BFF)"><i>▶</i>Clinic<br>Tour</div>
+          <div class="tile" style="background:linear-gradient(160deg,#0F5C4A,#33E1B0)"><i>▶</i>Dr. Tips:<br>Sensitive teeth</div>
+          <div class="tile" style="background:linear-gradient(160deg,#5B2A86,#B84DFF)"><i>▶</i>Smile<br>Makeover</div>
+          <div class="tile" style="background:linear-gradient(160deg,#7A4A00,#FFB020)">★★★★★<br>Patient story</div>
+          <div class="tile" style="background:linear-gradient(160deg,#2B2F3A,#6B7385)"><i>▶</i>Meet the<br>Team</div>
+          <div class="tile" style="background:linear-gradient(160deg,#7A1F2B,#FF5A5F)"><i>▶</i>Braces<br>Q&amp;A</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S4 TRUST -->
+<div class="scene" id="s4">
+  <div class="abs center" id="s4a" style="top:560px;font-size:68px;font-weight:700;line-height:1.25;color:#C9CCD4">Patient wahi clinic<br>choose karta hai jis par<br><span style="color:#fff">bharosa ho.</span></div>
+  <div class="abs center big" id="s4b" style="top:930px;font-size:150px">Trust<br><span class="acc">= Content</span></div>
+</div>
+
+<!-- S5 SERVICES -->
+<div class="scene" id="s5">
+  <div class="abs center big" id="s5t" style="top:380px;font-size:84px;letter-spacing:-2px">Hum sab sambhalte hain</div>
+  <div class="card" id="c1" style="top:580px"><div class="num">1</div>Content Shoots</div>
+  <div class="card" id="c2" style="top:780px"><div class="num">2</div>Social Media</div>
+  <div class="card" id="c3" style="top:980px"><div class="num">3</div>Meta &amp; Google Ads</div>
+  <div class="abs center big" id="s5b" style="top:1220px;font-size:110px">A <span class="acc">to</span> Z.</div>
+</div>
+
+<!-- S6 CTA -->
+<div class="scene" id="s6">
+  <div class="abs center" id="s6a" style="top:470px"><span class="pill" style="color:var(--acc);border-color:var(--acc)">100% FREE</span></div>
+  <div class="abs center big" id="s6b" style="top:620px;font-size:150px">Clinic<br>Audit</div>
+  <div class="abs center" id="s6c" style="top:960px;font-size:46px;font-weight:600;color:#C9CCD4;line-height:1.35">Aapke Instagram ka review<br>+ growth plan</div>
+  <div class="abs cta-btn" id="s6d" style="top:1140px">Form bharein ↓</div>
+  <div class="abs center wm" id="s6e" style="top:1360px">CINUE CUE MEDIA</div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const cl = x => Math.max(0, Math.min(1, x));
+const seg = (t,a,b) => cl((t-a)/(b-a));
+const eo = x => 1 - Math.pow(1-x, 3);
+const eb = x => { const c1=1.70158,c3=c1+1; return 1 + c3*Math.pow(x-1,3) + c1*Math.pow(x-1,2); };
+function vis(el, t, a, b, fi=.25, fo=.25) { // scene visibility window
+  const o = Math.min(seg(t,a,a+fi), 1 - seg(t,b-fo,b));
+  el.style.opacity = o; return o;
+}
+function pop(el, t, a, dur=.45, dy=60) {
+  const p = seg(t,a,a+dur);
+  el.style.opacity = eo(p);
+  el.style.transform = `translateY(${(1-eo(p))*dy}px) scale(${0.92+0.08*eb(p)})`;
+}
+const TEXT = "aapka clinic";
+window.render = function(t) {
+  // S1 0–2.4
+  vis($('s1'), t, 0, 2.4, .01, .25);
+  pop($('s1a'), t, 0.05, .4, 40);
+  pop($('s1b'), t, 0.45, .5, 80);
+
+  // Phone 2.4–9.4
+  vis($('sp'), t, 2.4, 9.4, .3, .3);
+  const ph = eo(seg(t,2.4,2.9));
+  $('phone').style.transform = `translateY(${(1-ph)*300}px)`;
+  const n = Math.floor(seg(t,2.8,3.8) * TEXT.length);
+  $('typed').textContent = TEXT.slice(0,n);
+  $('caret').style.opacity = (t<4.0 && Math.floor(t*3)%2===0) ? 1 : 0;
+  const wp = eo(seg(t,3.9,4.3)); $('weakProf').style.opacity = wp;
+  const lp = seg(t,4.7,5.1); $('lastPost').style.opacity = eo(lp);
+  $('lastPost').style.transform = `scale(${0.8+0.2*eb(lp)}) rotate(-3deg)`;
+  // swipe at 5.9
+  const sw = eo(seg(t,5.9,6.4));
+  $('weak').style.transform = `translateX(${-sw*100}%)`;
+  $('strong').style.transform = `translateX(${(1-sw)*100}%)`;
+  $('capA').style.opacity = 1 - seg(t,5.8,6.1);
+  const cb = seg(t,6.2,6.6); $('capB').style.opacity = eo(cb);
+  $('capB').style.transform = `translateY(${(1-eo(cb))*40}px)`;
+  [...$('sgrid').children].forEach((el,i) => {
+    const p = seg(t, 6.4 + i*0.12, 6.4 + i*0.12 + .35);
+    el.style.transform = `scale(${0.6+0.4*eb(p)})`; el.style.opacity = p;
+  });
+
+  // S4 9.4–12.6
+  vis($('s4'), t, 9.4, 12.6, .25, .25);
+  pop($('s4a'), t, 9.5, .5, 50);
+  pop($('s4b'), t, 10.6, .5, 80);
+
+  // S5 12.6–16.2
+  vis($('s5'), t, 12.6, 16.2, .25, .25);
+  pop($('s5t'), t, 12.65, .4, 40);
+  ['c1','c2','c3'].forEach((id,i) => {
+    const p = eo(seg(t, 13.0 + i*0.45, 13.5 + i*0.45));
+    $(id).style.opacity = p; $(id).style.transform = `translateX(${(1-p)*-200}px)`;
+  });
+  pop($('s5b'), t, 14.6, .5, 60);
+
+  // S6 16.2–20
+  vis($('s6'), t, 16.2, 20.5, .25, .01);
+  pop($('s6a'), t, 16.3, .4, 30);
+  pop($('s6b'), t, 16.5, .5, 80);
+  pop($('s6c'), t, 17.0, .4, 30);
+  pop($('s6d'), t, 17.4, .5, 60);
+  const pulse = t > 18 ? 1 + 0.04*Math.sin((t-18)*6) : 1;
+  $('s6d').style.transform += ` scale(${pulse})`;
+  pop($('s6e'), t, 17.8, .4, 20);
+
+  // glow drift
+  $('glow').style.transform = `translate(${Math.sin(t*.5)*80}px, ${Math.cos(t*.4)*120}px)`;
+};
+render(0);
+</script>
+</body></html>
