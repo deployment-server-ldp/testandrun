@@ -1,0 +1,26 @@
+{
+  "_doc": "src = [x0,y0,x1,y1] crop in source/infographic.webp pixels. pos = exploded centre on the 1080x1920 canvas, scale = exploded size multiplier. home = centre on source/machine_wide.jpg where the part sits when assembled, home_scale = size there. label/label_pos/target (target is offset from part centre, in canvas px) drive the callouts. erase = label boxes of the infographic to blank inside the crop.",
+  "parts": [
+    {"id":"frame","src":[498,288,1092,592],"pos":[540,1010],"scale":1.2,"home":[1215,745],"home_scale":0.8,"label":"Main Machine Frame","label_pos":[540,1232],"target":[0,150],"grow":61},
+    {"id":"tobacco","keep_blue":true,"src":[12,122,502,396],"pos":[222,425],"scale":0.8,"home":[505,655],"home_scale":1.0,"label":"Tobacco Feeding Assembly","label_pos":[222,566],"target":[60,70],"erase":[[38,266,220,300],[196,366,304,408],[78,144,216,192]]},
+    {"id":"glue","src":[793,42,868,216],"pos":[545,405],"scale":1.0,"home":[1166,480],"home_scale":0.75,"label":"Glue Tank & Pump","label_pos":[545,528],"target":[0,40]},
+    {"id":"paper","src":[1048,84,1378,228],"pos":[858,400],"scale":0.95,"home":[1450,480],"home_scale":0.75,"label":"Paper Feeding Unit","label_pos":[858,505],"target":[0,40]},
+    {"id":"panel","src":[543,150,704,234],"pos":[160,672],"scale":1.15,"home":[1175,530],"home_scale":0.6,"label":"Electrical Control Panel","label_pos":[174,762],"target":[0,30]},
+    {"id":"pneumatic","keep_blue":true,"src":[722,122,797,236],"pos":[452,668],"scale":1.1,"home":[1150,600],"home_scale":0.5,"label":"Pneumatic Unit","label_pos":[452,762],"target":[0,40]},
+    {"id":"motor","keep_blue":true,"src":[903,78,1012,172],"pos":[690,668],"scale":1.2,"home":[1272,480],"home_scale":0.6,"label":"Main Drive Motor","label_pos":[690,762],"target":[0,36]},
+    {"id":"cutting","src":[308,398,502,532],"pos":[925,668],"scale":0.9,"home":[770,790],"home_scale":0.9,"label":"Cutting Unit","label_pos":[925,762],"target":[0,40]},
+    {"id":"cover_r","src":[1433,226,1578,538],"pos":[987,1000],"scale":0.88,"home":[1585,700],"home_scale":0.9,"label":"Safety Covers","label_pos":[962,1178],"target":[0,110]},
+    {"id":"local_panel","erase":[[100,526,244,562]],"src":[226,424,322,598],"pos":[92,930],"scale":0.85,"home":[662,805],"home_scale":0.8},
+    {"id":"cover_l","src":[18,586,208,744],"pos":[92,1105],"scale":0.8,"home":[390,800],"home_scale":0.8},
+    {"id":"aux_motor","src":[418,628,626,718],"pos":[160,1338],"scale":1.0,"home":[1010,800],"home_scale":0.5,"label":"Auxiliary Motor","label_pos":[160,1420],"target":[30,30]},
+    {"id":"gearbox","src":[628,624,768,718],"pos":[412,1338],"scale":1.0,"home":[1100,800],"home_scale":0.5,"label":"Gearbox / Reducer","label_pos":[412,1420],"target":[20,32]},
+    {"id":"pulleys","src":[768,622,928,724],"pos":[655,1336],"scale":1.0,"home":[1180,780],"home_scale":0.5,"label":"Pulleys","label_pos":[655,1420],"target":[0,36]},
+    {"id":"tray","src":[1226,454,1428,582],"pos":[915,1335],"scale":0.92,"home":[1395,850],"home_scale":0.9,"label":"Discharge Tray","label_pos":[915,1420],"target":[0,44]},
+    {"id":"gears","src":[1388,698,1456,762],"pos":[180,1506],"scale":1.5,"home":[1140,720],"home_scale":0.4,"label":"Drive Gears","label_pos":[180,1580],"target":[0,34]},
+    {"id":"belts","src":[1566,614,1652,668],"pos":[540,1506],"scale":1.5,"home":[1200,770],"home_scale":0.4,"label":"Timing Belts","label_pos":[540,1580],"target":[0,30]},
+    {"id":"rollers","src":[1476,620,1552,668],"pos":[900,1506],"scale":1.5,"home":[1060,700],"home_scale":0.4,"label":"Feed Rollers","label_pos":[900,1580],"target":[0,28]},
+    {"id":"valves","keep_blue":true,"src":[1056,628,1132,702],"pos":[180,1654],"scale":1.2,"home":[1260,640],"home_scale":0.4,"label":"Pneumatic Valves","label_pos":[180,1730],"target":[0,34]},
+    {"id":"sensors","src":[1143,646,1247,704],"pos":[540,1654],"scale":1.25,"home":[1250,830],"home_scale":0.4,"label":"Sensors","label_pos":[540,1730],"target":[0,26]},
+    {"id":"bearings","src":[1250,642,1354,694],"pos":[900,1654],"scale":1.3,"home":[1100,750],"home_scale":0.4,"label":"Bearings & Bushings","label_pos":[900,1730],"target":[0,26]}
+  ]
+}
