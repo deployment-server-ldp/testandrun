@@ -1,0 +1,363 @@
+{
+ "_doc": "Parts cut straight from source/machine_wide.jpg. poly = outline in photo pixels (a 4-number list is a rectangle x0,y0,x1,y1). to = where the part's centre floats to when exploded (photo pixels). side = where its label sits (T/B/L/R). Names are editable.",
+ "parts": [
+  {
+   "id": "cover_r",
+   "label": "Safety Cover (Right)",
+   "poly": [
+    [
+     1548,
+     408
+    ],
+    [
+     1672,
+     412
+    ],
+    [
+     1674,
+     985
+    ],
+    [
+     1610,
+     1010
+    ],
+    [
+     1500,
+     998
+    ],
+    [
+     1462,
+     940
+    ],
+    [
+     1490,
+     750
+    ],
+    [
+     1490,
+     542
+    ],
+    [
+     1548,
+     542
+    ]
+   ],
+   "to": [
+    2010,
+    730
+   ],
+   "side": "T"
+  },
+  {
+   "id": "magazine",
+   "label": "Paper Feeding Unit",
+   "poly": [
+    1322,
+    400,
+    1548,
+    562
+   ],
+   "to": [
+    1880,
+    215
+   ],
+   "side": "T"
+  },
+  {
+   "id": "guide",
+   "label": "Paper Guide & Web Path",
+   "poly": [
+    1140,
+    560,
+    1492,
+    640
+   ],
+   "to": [
+    1330,
+    345
+   ],
+   "side": "L"
+  },
+  {
+   "id": "motor",
+   "label": "Main Drive Motor",
+   "poly": [
+    1242,
+    435,
+    1322,
+    556
+   ],
+   "to": [
+    1520,
+    250
+   ],
+   "side": "T"
+  },
+  {
+   "id": "panel",
+   "label": "Electrical Control Panel",
+   "poly": [
+    1110,
+    490,
+    1250,
+    560
+   ],
+   "to": [
+    1265,
+    120
+   ],
+   "side": "T"
+  },
+  {
+   "id": "glue",
+   "label": "Glue Tank & Pump",
+   "poly": [
+    1127,
+    386,
+    1206,
+    460
+   ],
+   "to": [
+    1030,
+    250
+   ],
+   "side": "T"
+  },
+  {
+   "id": "filter",
+   "label": "Filter Tipping Unit",
+   "poly": [
+    1305,
+    640,
+    1498,
+    722
+   ],
+   "to": [
+    1470,
+    1150
+   ],
+   "side": "B"
+  },
+  {
+   "id": "tray",
+   "label": "Discharge Tray",
+   "poly": [
+    1300,
+    722,
+    1498,
+    882
+   ],
+   "to": [
+    1800,
+    1100
+   ],
+   "side": "B"
+  },
+  {
+   "id": "cutting",
+   "label": "Cutting Unit",
+   "poly": [
+    1100,
+    650,
+    1245,
+    792
+   ],
+   "to": [
+    1215,
+    1130
+   ],
+   "side": "B"
+  },
+  {
+   "id": "rod",
+   "label": "Rod Forming Section",
+   "poly": [
+    955,
+    565,
+    1100,
+    745
+   ],
+   "to": [
+    860,
+    1110
+   ],
+   "side": "B"
+  },
+  {
+   "id": "pneumatic",
+   "label": "Pneumatic Unit",
+   "poly": [
+    587,
+    446,
+    880,
+    521
+   ],
+   "to": [
+    440,
+    175
+   ],
+   "side": "T"
+  },
+  {
+   "id": "guard",
+   "label": "Safety Guard",
+   "poly": [
+    765,
+    512,
+    878,
+    642
+   ],
+   "to": [
+    790,
+    150
+   ],
+   "side": "T"
+  },
+  {
+   "id": "drums",
+   "label": "Rotary Drums",
+   "poly": [
+    710,
+    572,
+    862,
+    732
+   ],
+   "to": [
+    640,
+    360
+   ],
+   "side": "L"
+  },
+  {
+   "id": "tank_l",
+   "label": "Fluid Reservoir",
+   "poly": [
+    508,
+    466,
+    594,
+    557
+   ],
+   "to": [
+    150,
+    400
+   ],
+   "side": "T"
+  },
+  {
+   "id": "aux",
+   "label": "Auxiliary Motor",
+   "poly": [
+    465,
+    640,
+    552,
+    684
+   ],
+   "to": [
+    370,
+    560
+   ],
+   "side": "L"
+  },
+  {
+   "id": "rail",
+   "label": "Rod Forming Unit",
+   "poly": [
+    [
+     120,
+     672
+    ],
+    [
+     180,
+     672
+    ],
+    [
+     225,
+     705
+    ],
+    [
+     500,
+     683
+    ],
+    [
+     725,
+     668
+    ],
+    [
+     727,
+     698
+    ],
+    [
+     535,
+     707
+    ],
+    [
+     258,
+     733
+    ],
+    [
+     258,
+     757
+    ],
+    [
+     145,
+     757
+    ],
+    [
+     120,
+     735
+    ]
+   ],
+   "to": [
+    330,
+    700
+   ],
+   "side": "B"
+  },
+  {
+   "id": "cover_l",
+   "label": "Safety Cover (Left)",
+   "poly": [
+    [
+     255,
+     732
+    ],
+    [
+     535,
+     704
+    ],
+    [
+     546,
+     851
+    ],
+    [
+     278,
+     908
+    ],
+    [
+     257,
+     893
+    ]
+   ],
+   "to": [
+    250,
+    1050
+   ],
+   "side": "B"
+  },
+  {
+   "id": "local",
+   "label": "Local Control Panel",
+   "poly": [
+    636,
+    729,
+    694,
+    898
+   ],
+   "to": [
+    530,
+    1100
+   ],
+   "side": "B"
+  }
+ ]
+}
