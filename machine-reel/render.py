@@ -25,19 +25,24 @@ T_LABELS, LABEL_STEP = 10.1, 0.25       # scene 3
 T_LABELS_OUT = 15.6
 T_REASM, REASM_DUR = 16.25, 2.2          # scene 4
 T_FINAL = 22.0                           # scene 5 (base clock; shown after the close-up tour)
-# close-up tour, cut in between reassembly and the final hero shot
-TOUR_T0, TOUR_SRC0, TOUR_LEN = 22.0, 1.25, 19.4      # film time it starts, start inside mk8_reel_v3.mp4, length
+# film clock -> base clock. The 2 s hover between explosion and labels is skipped (fast ramp), so labels follow at once.
+RAMP0, RAMP1, SKIP = 7.6, 8.1, 2.0
+def base_of(ft):
+    return ft if ft < RAMP0 else RAMP0 + (ft - RAMP0) * (RAMP1 - RAMP0 + SKIP) / (RAMP1 - RAMP0) if ft < RAMP1 else ft + SKIP
+# close-up tour, cut in between reassembly and the final hero shot (film times; all cues sit on the music's 0.5 s grid, see build/music.py)
+TOUR_T0, TOUR_SRC0, TOUR_LEN = 20.1, 1.0, 19.5       # film time it starts, start inside mk8_reel_v3.mp4, length
 TOUR_T1 = TOUR_T0 + TOUR_LEN
-TOTAL = TOUR_T1 + 4.0
+TOTAL = TOUR_T1 + 4.5
+STEP_T = [4.0, 8.1, 14.25, TOUR_T0, TOUR_T1]          # footer step changes (film time)
 BAND = (640, 1242)                                    # picture band rows inside the MK8 reel
-SECTIONS = [(22.0, "FEEDING & CONTROL"), (26.92, "DRUMS & ROLLERS"), (32.42, "TRAY & GUARDS"), (36.42, "DRIVE & CONTROL")]
+SECTIONS = [(20.2, "FEEDING & CONTROL"), (25.27, "DRUMS & ROLLERS"), (30.77, "TRAY & GUARDS"), (34.77, "DRIVE & CONTROL")]
 ORDER = ["frame", "tobacco", "paper", "cover_r", "cover_l", "local_panel", "glue", "panel", "motor",
          "pneumatic", "cutting", "tray", "aux_motor", "gearbox", "pulleys", "gears", "belts", "rollers",
          "valves", "sensors", "bearings"]
 LABEL_ORDER = ["frame", "motor", "aux_motor", "gearbox", "gears", "pulleys", "belts", "rollers", "cutting",
                "tobacco", "paper", "glue", "pneumatic", "valves", "panel", "sensors", "bearings", "cover_r", "tray"]
-CAM_KEYS = [(0, 1.0), (4.0, 1.10), (7.2, 1.0), (10, 1.0), (16, 1.025), (21.6, 1.12), (26, 1.0)]
-PAN_KEYS = [(0, 95), (4.0, 95), (7.2, 0), (16.5, 0), (21.0, 95), (26, 95)]   # camera drop so the hero machine sits lower under the titles
+CAM_KEYS = [(0, 1.0), (4.0, 1.10), (7.2, 1.0), (10, 1.0), (16, 1.025), (21.6, 1.12), (26.6, 1.0)]
+PAN_KEYS = [(0, 95), (4.0, 95), (7.2, 0), (16.5, 0), (21.0, 95), (26.6, 95)]   # camera drop so the hero machine sits lower under the titles
 # machine photo -> world mapping
 PS, PHOTO_C, WORLD_C = 0.60, (900, 705), (540, 1010)
 
@@ -184,14 +189,15 @@ def load_assets():
     A["grain"] = [rng.normal(0, 1.3, (H // 2, W // 2)).astype(np.float32) for _ in range(8)]
     # titles
     T = {}
-    T["t0"] = text_layer("MARK 8", F_TITLE, 168, glow=11, max_w=930)
-    T["t1"] = text_layer("AUTOMATIC CIGARETTE", F_TITLE, 70, glow=7, max_w=930)
-    T["t2"] = text_layer("MAKING MACHINE (MK-8)", F_TITLE, 70, glow=7, max_w=930)
+    T["t0"] = text_layer("MARK 8", F_TITLE, 126, glow=10, max_w=930)
+    T["t1"] = text_layer("AUTOMATIC CIGARETTE", F_TITLE, 55, glow=6, max_w=930)
+    T["t2"] = text_layer("MAKING MACHINE (MK-8)", F_TITLE, 55, glow=6, max_w=930)
     T["brand"] = text_layer("CIVIC TOBACCO MACHINERY", F_SUB, 22, color=(110, 205, 255), tracking=8)
     T["name"] = text_layer("MARK 8 AUTOMATIC CIGARETTE MAKING MACHINE (MK-8)", F_SUB, 24, color=(150, 190, 230), tracking=3, max_w=960)
     T["t3"] = text_layer("ENGINEERING EXPLODED VIEW", F_SUB, 33, color=(110, 205, 255), tracking=9)
-    T["c1"] = text_layer("PRECISION IN", F_TITLE, 96, glow=9, max_w=930)
-    T["c2"] = text_layer("EVERY COMPONENT", F_TITLE, 96, glow=9, max_w=930)
+    T["c1"] = text_layer("CIVIC TOBACCO MACHINERY", F_TITLE, 66, glow=8, max_w=900)
+    T["c2"] = text_layer("KARACHI - PAKISTAN", F_TITLE, 46, glow=6)
+    T["web"] = text_layer("www.civic-tobacco-machinery.com", F_SUB, 31, color=(235, 245, 255), tracking=2)
     T["c3"] = text_layer("ENGINEERED FOR INDUSTRIAL PERFORMANCE", F_SUB, 28, color=(110, 205, 255), tracking=6)
     T["h"] = text_layer("MK-8 AUTOMATIC CIGARETTE MAKING MACHINE", F_TITLE, 44, glow=5, max_w=940)
     for k, s in [("h2", "EXPLODED VIEW"), ("h3", "SPARE PARTS IDENTIFICATION"), ("h4", "REASSEMBLY"), ("h5", "INSIDE THE MACHINE  //  KEY SECTIONS")]:
@@ -238,7 +244,7 @@ def title_block(cv, T, keys, ys, t, t_in, t_out, stagger=0.16):
 
 def draw_footer(cv, T, ft):
     fa = sstep(0.8, 1.6, ft)
-    step = 0 if ft < 4 else 1 if ft < 10 else 2 if ft < 16 else 3 if ft < TOUR_T0 else 4 if ft < TOUR_T1 else 5
+    step = sum(ft >= v for v in STEP_T)
     for i, x in enumerate([98, 262, 428, 612, 800, 962]):
         L = T[f"s{i}on" if i == step else f"s{i}off"]
         comp(cv, L, int(x - L.shape[1] / 2), int(1848 - L.shape[0] / 2), fa)
@@ -255,7 +261,7 @@ def render_tour(ft, A, band):
     cv = A["bg"] * 0.9 + cv2.resize(tiny, (W, H), interpolation=cv2.INTER_CUBIC) * np.array([0.30, 0.20, 0.13], np.float32)
     M = np.float32([[1, 0, 540 - 700], [0, 1, 960 - 1200 - ft * 2.0]])
     cv += cv2.warpAffine(A["grid"], M, (W, H))
-    y0, y1 = 690, 690 + b.shape[0]
+    y0, y1 = 770, 770 + b.shape[0]
     cv[y0:y1] = b
     glow = np.zeros((H, W, 3), np.float32)
     for y in (y0 - 2, y1 + 1): cv2.line(glow, (0, y), (W, y), tuple(float(v) for v in BLUE), 3)
@@ -275,16 +281,13 @@ def render_tour(ft, A, band):
         a_in = out_cubic((ft - a0 - 0.05) / 0.6); a = a_in * (1 - sstep(a1 - 0.3, a1, ft))
         if a > 0:
             off = int((1 - a_in) * 60)
-            N = T[f"n{i}"]; comp(cv, N, 22 - off, int(520 - N.shape[0] / 2), a)
-            comp(cv, T["seclab"], 318 + off, int(470 - T["seclab"].shape[0] / 2), a)
-            S_ = T[f"sec{i}"]; comp(cv, S_, 318 + off - 36, int(548 - S_.shape[0] / 2), a)
+            N = T[f"n{i}"]; comp(cv, N, 22 - off, int(590 - N.shape[0] / 2), a)
+            comp(cv, T["seclab"], 318 + off, int(540 - T["seclab"].shape[0] / 2), a)
+            S_ = T[f"sec{i}"]; comp(cv, S_, 318 + off - 36, int(618 - S_.shape[0] / 2), a)
         x0 = 60 + i * 245; fill = clamp((ft - a0) / (a1 - a0))
-        cv[1372:1375, x0:x0 + 225] += BLUE * 0.22
-        cv[1371:1376, x0:x0 + int(225 * fill)] += BLUE * 0.95
-        Ln = T[f"sn{i}on" if a0 <= ft < a1 else f"sn{i}off"]; comp(cv, Ln, x0 - 30, int(1404 - Ln.shape[0] / 2))
-    draw_sprite(cv, A["hero_halo"], 540, 1610, 0.46, 0.35, add=True)
-    draw_sprite(cv, A["hero"], 540, 1610, 0.46, 0.6)
-    L = T["name"]; comp(cv, L, int(540 - L.shape[1] / 2), int(1762 - L.shape[0] / 2), 0.9)
+        cv[1462:1465, x0:x0 + 225] += BLUE * 0.22
+        cv[1461:1466, x0:x0 + int(225 * fill)] += BLUE * 0.95
+        Ln = T[f"sn{i}on" if a0 <= ft < a1 else f"sn{i}off"]; comp(cv, Ln, x0 - 30, int(1496 - Ln.shape[0] / 2))
     draw_footer(cv, T, ft)
     cv *= A["vig"]
     cv += cv2.resize(A["grain"][int(ft * FPS) % 8], (W, H), interpolation=cv2.INTER_NEAREST)[..., None]
@@ -393,7 +396,7 @@ def render(t, A, FT=None):
                 cv2.circle(glow, (int(hxw), int(hyw)), int(8 + 46 * out_cubic(u)), tuple(float(v) for v in CYAN * (1 - u)), 2, cv2.LINE_AA)
 
     # ---- alignment brackets around the machine (scene 1, end of 4, scene 5)
-    br = max(sstep(0.5, 1.4, t) * (1 - sstep(3.6, 4.2, t)), sstep(19.6, 20.8, t) * (1 - sstep(25.2, 25.9, t)) * 1.0)
+    br = max(sstep(0.5, 1.4, t) * (1 - sstep(3.6, 4.2, t)), sstep(19.6, 20.8, t) * (1 - sstep(25.8, 26.5, t)) * 1.0)
     if br > 0.01:
         spread = 1 + 0.25 * (1 - sstep(19.6, 21.2, t)) if t > 10 else 1 + 0.12 * (1 - out_cubic((t - .5) / 1.0))
         bx0, by0, _ = cam(540 - 490 * spread, 1010 - 225 * spread, z); bx1, by1, _ = cam(540 + 490 * spread, 1010 + 235 * spread, z)
@@ -455,14 +458,16 @@ def render(t, A, FT=None):
         comp(cv, pill[:, c0:c0 + 2 * half], int(lx - half), int(ly - ph / 2), out * min(w * 1.6, 1))
 
     # ---- titles
-    title_block(cv, T, ["brand", "t0", "t1", "t2", "t3"], [360, 478, 610, 692, 800], t, 0.35, 3.45, 0.13)
+    title_block(cv, T, ["brand", "t0", "t1", "t2", "t3"], [420, 512, 610, 676, 778], t, 0.35, 3.45, 0.13)
     a = out_cubic((t - 0.9) / 0.8) * (1 - sstep(3.45, 3.9, t))
-    if a > 0: cv[748:751, int(540 - 210 * a):int(540 + 210 * a)] += BLUE * a
-    title_block(cv, T, ["c1", "c2", "c3"], [545, 652, 762], t, T_FINAL + 0.15, 99)
+    if a > 0: cv[728:731, int(540 - 210 * a):int(540 + 210 * a)] += BLUE * a
+    title_block(cv, T, ["c1", "c2", "c3"], [580, 660, 762], t, T_FINAL + 0.15, 99)
     na = sstep(T_FINAL + 0.9, T_FINAL + 1.6, t)
-    if na > 0: comp(cv, T["name"], int(540 - T["name"].shape[1] / 2), int(1500 - T["name"].shape[0] / 2), na)
+    if na > 0: comp(cv, T["name"], int(540 - T["name"].shape[1] / 2), int(1495 - T["name"].shape[0] / 2), na)
+    wa = sstep(T_FINAL + 1.2, T_FINAL + 1.9, t)
+    if wa > 0: comp(cv, T["web"], int(540 - T["web"].shape[1] / 2), int(1556 - T["web"].shape[0] / 2), wa)
     a = out_cubic((t - T_FINAL - 0.6) / 0.8)
-    if a > 0: cv[709:712, int(540 - 210 * a):int(540 + 210 * a)] += BLUE * a
+    if a > 0: cv[713:716, int(540 - 210 * a):int(540 + 210 * a)] += BLUE * a
     # header (scenes 2-4)
     ha = sstep(4.3, 5.0, t) * (1 - sstep(21.2, 21.8, t))
     if ha > 0:
@@ -480,7 +485,7 @@ def render(t, A, FT=None):
         if fl > .3: cv += BLUE / 255 * fl + fl * 0.35
     cv *= A["vig"]
     cv += cv2.resize(A["grain"][int(t * FPS) % 8], (W, H), interpolation=cv2.INTER_NEAREST)[..., None]
-    cv *= sstep(0, 0.5, t) * (1 - sstep(25.5, 26.0, t))
+    cv *= sstep(0, 0.5, t) * (1 - sstep(26.1, 26.6, t))
     return np.clip(cv, 0, 255).astype(np.uint8)
 
 class Tour:
@@ -497,7 +502,7 @@ class Tour:
 
 def film_frame(ft, A, tour):
     """film time -> frame: base animation, the close-up tour, and 0.5 s dissolves between them"""
-    base_t = ft if ft <= TOUR_T0 else TOUR_T0 if ft < TOUR_T1 else TOUR_T0 + (ft - TOUR_T1)
+    base_t = base_of(min(ft, TOUR_T0)) + max(ft - TOUR_T1, 0)
     k = sstep(TOUR_T0 - 0.05, TOUR_T0 + 0.45, ft) * (1 - sstep(TOUR_T1 - 0.25, TOUR_T1 + 0.25, ft))
     if k <= 0: return render(base_t, A, ft)
     tf = render_tour(ft, A, tour.band(ft))
@@ -512,7 +517,7 @@ if __name__ == "__main__":
         sys.exit()
     os.makedirs(f"{R}/out", exist_ok=True)
     out = f"{R}/out/mk8_exploded_view_reel.mp4"
-    subprocess.run([sys.executable, f"{R}/build/music.py", str(TOTAL), f"{R}/build/music.wav"], check=True)
+    subprocess.run([sys.executable, f"{R}/build/music.py", f"{R}/build/music.wav"], check=True)
     ff = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
                            "-i", f"{R}/build/music.wav", "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-pix_fmt", "yuv420p",
                            "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out], stdin=subprocess.PIPE)
