@@ -33,6 +33,7 @@ def base_of(ft):
 TOUR_T0, TOUR_SRC0, TOUR_LEN = 20.1, 1.0, 19.5       # film time it starts, start inside mk8_reel_v3.mp4, length
 TOUR_T1 = TOUR_T0 + TOUR_LEN
 TOTAL = TOUR_T1 + 4.5
+SPEED = 1.059                                          # whole film (picture + music) plays this much faster; music.py matches
 STEP_T = [4.0, 8.1, 14.25, TOUR_T0, TOUR_T1]          # footer step changes (film time)
 BAND = (640, 1242)                                    # picture band rows inside the MK8 reel
 SECTIONS = [(20.2, "FEEDING & CONTROL"), (25.27, "DRUMS & ROLLERS"), (30.77, "TRAY & GUARDS"), (34.77, "DRIVE & CONTROL")]
@@ -521,8 +522,8 @@ if __name__ == "__main__":
     ff = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
                            "-i", f"{R}/build/music.wav", "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-pix_fmt", "yuv420p",
                            "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out], stdin=subprocess.PIPE)
-    n = int(round(TOTAL * FPS))
+    n = int(round(TOTAL / SPEED * FPS))
     for i in range(n):
-        ff.stdin.write(film_frame(i / FPS, A, tour).tobytes())
+        ff.stdin.write(film_frame(i / FPS * SPEED, A, tour).tobytes())
         if i % 120 == 0: print(f"{i}/{n}", flush=True)
     ff.stdin.close(); ff.wait(); print("wrote", out)
