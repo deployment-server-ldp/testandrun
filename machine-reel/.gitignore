@@ -1,3 +1,4 @@
 build/*.png
 build/*.jpg
+build/*.wav
 __pycache__/

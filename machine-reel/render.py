@@ -24,14 +24,20 @@ T_EXPLODE, EXPLODE_DUR = 4.15, 2.4       # scene 2
 T_LABELS, LABEL_STEP = 10.1, 0.25       # scene 3
 T_LABELS_OUT = 15.6
 T_REASM, REASM_DUR = 16.25, 2.2          # scene 4
-T_FINAL = 22.0                           # scene 5
+T_FINAL = 22.0                           # scene 5 (base clock; shown after the close-up tour)
+# close-up tour, cut in between reassembly and the final hero shot
+TOUR_T0, TOUR_SRC0, TOUR_LEN = 22.0, 1.25, 19.4      # film time it starts, start inside mk8_reel_v3.mp4, length
+TOUR_T1 = TOUR_T0 + TOUR_LEN
+TOTAL = TOUR_T1 + 4.0
+BAND = (640, 1242)                                    # picture band rows inside the MK8 reel
+SECTIONS = [(22.0, "FEEDING & CONTROL"), (26.92, "DRUMS & ROLLERS"), (32.42, "TRAY & GUARDS"), (36.42, "DRIVE & CONTROL")]
 ORDER = ["frame", "tobacco", "paper", "cover_r", "cover_l", "local_panel", "glue", "panel", "motor",
          "pneumatic", "cutting", "tray", "aux_motor", "gearbox", "pulleys", "gears", "belts", "rollers",
          "valves", "sensors", "bearings"]
 LABEL_ORDER = ["frame", "motor", "aux_motor", "gearbox", "gears", "pulleys", "belts", "rollers", "cutting",
                "tobacco", "paper", "glue", "pneumatic", "valves", "panel", "sensors", "bearings", "cover_r", "tray"]
-CAM_KEYS = [(0, 1.0), (4.0, 1.10), (7.2, 1.0), (10, 1.0), (16, 1.025), (21.6, 1.12), (25, 1.0)]
-PAN_KEYS = [(0, 95), (4.0, 95), (7.2, 0), (16.5, 0), (21.0, 95), (25, 95)]   # camera drop so the hero machine sits lower under the titles
+CAM_KEYS = [(0, 1.0), (4.0, 1.10), (7.2, 1.0), (10, 1.0), (16, 1.025), (21.6, 1.12), (26, 1.0)]
+PAN_KEYS = [(0, 95), (4.0, 95), (7.2, 0), (16.5, 0), (21.0, 95), (26, 95)]   # camera drop so the hero machine sits lower under the titles
 # machine photo -> world mapping
 PS, PHOTO_C, WORLD_C = 0.60, (900, 705), (540, 1010)
 
@@ -178,19 +184,28 @@ def load_assets():
     A["grain"] = [rng.normal(0, 1.3, (H // 2, W // 2)).astype(np.float32) for _ in range(8)]
     # titles
     T = {}
-    T["t1"] = text_layer("CIGARETTE MAKING", F_TITLE, 98, glow=9, max_w=930)
-    T["t2"] = text_layer("MACHINE", F_TITLE, 98, glow=9, max_w=930)
+    T["t0"] = text_layer("MARK 8", F_TITLE, 168, glow=11, max_w=930)
+    T["t1"] = text_layer("AUTOMATIC CIGARETTE", F_TITLE, 70, glow=7, max_w=930)
+    T["t2"] = text_layer("MAKING MACHINE (MK-8)", F_TITLE, 70, glow=7, max_w=930)
+    T["brand"] = text_layer("CIVIC TOBACCO MACHINERY", F_SUB, 22, color=(110, 205, 255), tracking=8)
+    T["name"] = text_layer("MARK 8 AUTOMATIC CIGARETTE MAKING MACHINE (MK-8)", F_SUB, 24, color=(150, 190, 230), tracking=3, max_w=960)
     T["t3"] = text_layer("ENGINEERING EXPLODED VIEW", F_SUB, 33, color=(110, 205, 255), tracking=9)
     T["c1"] = text_layer("PRECISION IN", F_TITLE, 96, glow=9, max_w=930)
     T["c2"] = text_layer("EVERY COMPONENT", F_TITLE, 96, glow=9, max_w=930)
     T["c3"] = text_layer("ENGINEERED FOR INDUSTRIAL PERFORMANCE", F_SUB, 28, color=(110, 205, 255), tracking=6)
-    T["h"] = text_layer("CIGARETTE MAKING MACHINE", F_TITLE, 44, glow=5)
-    for k, s in [("h2", "EXPLODED VIEW"), ("h3", "SPARE PARTS IDENTIFICATION"), ("h4", "REASSEMBLY")]:
+    T["h"] = text_layer("MK-8 AUTOMATIC CIGARETTE MAKING MACHINE", F_TITLE, 44, glow=5, max_w=940)
+    for k, s in [("h2", "EXPLODED VIEW"), ("h3", "SPARE PARTS IDENTIFICATION"), ("h4", "REASSEMBLY"), ("h5", "INSIDE THE MACHINE  //  KEY SECTIONS")]:
         T[k] = text_layer(s, F_SUB, 27, color=(110, 205, 255), tracking=8)
     T["ok"] = text_layer("ASSEMBLY ALIGNED", FD + "Inter-SemiBold.otf", 22, color=(110, 205, 255), tracking=6)
-    for i, s in enumerate(["ORIGINAL", "EXPLODE", "IDENTIFY", "REASSEMBLE", "FINAL"]):
-        T[f"s{i}on"] = text_layer(f"0{i+1}  {s}", F_SUB, 19, color=(255, 255, 255), tracking=2)
-        T[f"s{i}off"] = text_layer(f"0{i+1}  {s}", F_SUB, 19, color=(95, 125, 165), tracking=2)
+    for i, s in enumerate(["ORIGINAL", "EXPLODE", "IDENTIFY", "REASSEMBLE", "DETAILS", "FINAL"]):
+        T[f"s{i}on"] = text_layer(f"0{i+1}  {s}", F_SUB, 17, color=(255, 255, 255), tracking=1.5)
+        T[f"s{i}off"] = text_layer(f"0{i+1}  {s}", F_SUB, 17, color=(95, 125, 165), tracking=1.5)
+    for i, s in enumerate(SECTIONS):
+        T[f"n{i}"] = text_layer(f"0{i+1}", F_TITLE, 150, color=(60, 185, 255), glow=8)
+        T[f"sec{i}"] = text_layer(s[1], F_TITLE, 62, glow=6, max_w=690)
+        T[f"sn{i}on"] = text_layer(s[1], F_SUB, 16, color=(255, 255, 255), tracking=1)
+        T[f"sn{i}off"] = text_layer(s[1], F_SUB, 16, color=(95, 125, 165), tracking=1)
+    T["seclab"] = text_layer("SECTION", F_SUB, 22, color=(110, 205, 255), tracking=10)
     A["T"] = T
     return A
 
@@ -221,7 +236,61 @@ def title_block(cv, T, keys, ys, t, t_in, t_out, stagger=0.16):
         L = T[k]; off = (1 - a_in) * 46 - (1 - a_out) * 26
         comp(cv, L, int(540 - L.shape[1] / 2), int(y - L.shape[0] / 2 + off), a)
 
-def render(t, A):
+def draw_footer(cv, T, ft):
+    fa = sstep(0.8, 1.6, ft)
+    step = 0 if ft < 4 else 1 if ft < 10 else 2 if ft < 16 else 3 if ft < TOUR_T0 else 4 if ft < TOUR_T1 else 5
+    for i, x in enumerate([98, 262, 428, 612, 800, 962]):
+        L = T[f"s{i}on" if i == step else f"s{i}off"]
+        comp(cv, L, int(x - L.shape[1] / 2), int(1848 - L.shape[0] / 2), fa)
+    cv[1818:1820, 60:W - 60] += BLUE * 0.18 * fa
+    cv[1817:1821, 60:int(60 + (W - 120) * ft / TOTAL)] += BLUE * 0.9 * fa
+    for (x, y, dx, dy) in ((36, 36, 1, 1), (W - 36, 36, -1, 1), (36, H - 36, 1, -1), (W - 36, H - 36, -1, -1)):   # corner ticks
+        cv2.line(cv, (x, y), (x + dx * 34, y), tuple(float(v) for v in BLUE * 0.6), 2, cv2.LINE_AA)
+        cv2.line(cv, (x, y), (x, y + dy * 34), tuple(float(v) for v in BLUE * 0.6), 2, cv2.LINE_AA)
+
+def render_tour(ft, A, band):
+    """scene: real close-up footage (the picture band of source/mk8_reel_v3.mp4) in the film's HUD"""
+    T = A["T"]; b = band.astype(np.float32)
+    tiny = cv2.GaussianBlur(cv2.resize(b[:, 370:710], (54, 96), interpolation=cv2.INTER_AREA), (0, 0), 4)
+    cv = A["bg"] * 0.9 + cv2.resize(tiny, (W, H), interpolation=cv2.INTER_CUBIC) * np.array([0.30, 0.20, 0.13], np.float32)
+    M = np.float32([[1, 0, 540 - 700], [0, 1, 960 - 1200 - ft * 2.0]])
+    cv += cv2.warpAffine(A["grid"], M, (W, H))
+    y0, y1 = 690, 690 + b.shape[0]
+    cv[y0:y1] = b
+    glow = np.zeros((H, W, 3), np.float32)
+    for y in (y0 - 2, y1 + 1): cv2.line(glow, (0, y), (W, y), tuple(float(v) for v in BLUE), 3)
+    for dx, dy, sp, sz, ph in A["dust"]:
+        x = (dx * W + 18 * math.sin(ft * .4 + ph * 9)) % W; y = (dy * H - ft * (10 + 26 * sp)) % H
+        if not (y0 < y < y1): cv2.circle(glow, (int(x), int(y)), 1 + int(sz * 2), tuple(float(v) for v in BLUE * (0.10 + 0.25 * ph)), -1, cv2.LINE_AA)
+    small = cv2.resize(glow, (W // 4, H // 4), interpolation=cv2.INTER_AREA)
+    cv += glow + cv2.resize(cv2.GaussianBlur(small, (0, 0), 5), (W, H)) * 1.7
+    # header
+    L = T["h"]; comp(cv, L, int(540 - L.shape[1] / 2), int(128 - L.shape[0] / 2))
+    cv[171:173, 240:840] += BLUE * 0.9
+    L = T["h5"]; comp(cv, L, int(540 - L.shape[1] / 2), int(206 - L.shape[0] / 2))
+    # section title + progress segments
+    bounds = [s_[0] for s_ in SECTIONS] + [TOUR_T1]
+    for i in range(len(SECTIONS)):
+        a0, a1 = bounds[i], bounds[i + 1]
+        a_in = out_cubic((ft - a0 - 0.05) / 0.6); a = a_in * (1 - sstep(a1 - 0.3, a1, ft))
+        if a > 0:
+            off = int((1 - a_in) * 60)
+            N = T[f"n{i}"]; comp(cv, N, 22 - off, int(520 - N.shape[0] / 2), a)
+            comp(cv, T["seclab"], 318 + off, int(470 - T["seclab"].shape[0] / 2), a)
+            S_ = T[f"sec{i}"]; comp(cv, S_, 318 + off - 36, int(548 - S_.shape[0] / 2), a)
+        x0 = 60 + i * 245; fill = clamp((ft - a0) / (a1 - a0))
+        cv[1372:1375, x0:x0 + 225] += BLUE * 0.22
+        cv[1371:1376, x0:x0 + int(225 * fill)] += BLUE * 0.95
+        Ln = T[f"sn{i}on" if a0 <= ft < a1 else f"sn{i}off"]; comp(cv, Ln, x0 - 30, int(1404 - Ln.shape[0] / 2))
+    draw_sprite(cv, A["hero_halo"], 540, 1610, 0.46, 0.35, add=True)
+    draw_sprite(cv, A["hero"], 540, 1610, 0.46, 0.6)
+    L = T["name"]; comp(cv, L, int(540 - L.shape[1] / 2), int(1762 - L.shape[0] / 2), 0.9)
+    draw_footer(cv, T, ft)
+    cv *= A["vig"]
+    cv += cv2.resize(A["grain"][int(ft * FPS) % 8], (W, H), interpolation=cv2.INTER_NEAREST)[..., None]
+    return np.clip(cv, 0, 255).astype(np.uint8)
+
+def render(t, A, FT=None):
     cv = A["bg"].copy(); T = A["T"]
     glow = np.zeros((H, W, 3), np.float32)
     z = cam_zoom(t); PAN[0] = key(PAN_KEYS, t)
@@ -324,7 +393,7 @@ def render(t, A):
                 cv2.circle(glow, (int(hxw), int(hyw)), int(8 + 46 * out_cubic(u)), tuple(float(v) for v in CYAN * (1 - u)), 2, cv2.LINE_AA)
 
     # ---- alignment brackets around the machine (scene 1, end of 4, scene 5)
-    br = max(sstep(0.5, 1.4, t) * (1 - sstep(3.6, 4.2, t)), sstep(19.6, 20.8, t) * (1 - sstep(24.2, 24.9, t)) * 1.0)
+    br = max(sstep(0.5, 1.4, t) * (1 - sstep(3.6, 4.2, t)), sstep(19.6, 20.8, t) * (1 - sstep(25.2, 25.9, t)) * 1.0)
     if br > 0.01:
         spread = 1 + 0.25 * (1 - sstep(19.6, 21.2, t)) if t > 10 else 1 + 0.12 * (1 - out_cubic((t - .5) / 1.0))
         bx0, by0, _ = cam(540 - 490 * spread, 1010 - 225 * spread, z); bx1, by1, _ = cam(540 + 490 * spread, 1010 + 235 * spread, z)
@@ -386,10 +455,12 @@ def render(t, A):
         comp(cv, pill[:, c0:c0 + 2 * half], int(lx - half), int(ly - ph / 2), out * min(w * 1.6, 1))
 
     # ---- titles
-    title_block(cv, T, ["t1", "t2", "t3"], [545, 652, 762], t, 0.45, 3.45)
+    title_block(cv, T, ["brand", "t0", "t1", "t2", "t3"], [360, 478, 610, 692, 800], t, 0.35, 3.45, 0.13)
     a = out_cubic((t - 0.9) / 0.8) * (1 - sstep(3.45, 3.9, t))
-    if a > 0: cv[709:712, int(540 - 210 * a):int(540 + 210 * a)] += BLUE * a
+    if a > 0: cv[748:751, int(540 - 210 * a):int(540 + 210 * a)] += BLUE * a
     title_block(cv, T, ["c1", "c2", "c3"], [545, 652, 762], t, T_FINAL + 0.15, 99)
+    na = sstep(T_FINAL + 0.9, T_FINAL + 1.6, t)
+    if na > 0: comp(cv, T["name"], int(540 - T["name"].shape[1] / 2), int(1500 - T["name"].shape[0] / 2), na)
     a = out_cubic((t - T_FINAL - 0.6) / 0.8)
     if a > 0: cv[709:712, int(540 - 210 * a):int(540 + 210 * a)] += BLUE * a
     # header (scenes 2-4)
@@ -401,18 +472,7 @@ def render(t, A):
             a = sstep(a0, a0 + .4, t) * (1 - sstep(a1 - .3, a1, t)) * ha
             if a > 0:
                 L = T[k]; comp(cv, L, int(540 - L.shape[1] / 2), int(206 - L.shape[0] / 2 + (1 - sstep(a0, a0 + .4, t)) * 14), a)
-    # footer: process flow + progress bar
-    fa = sstep(0.8, 1.6, t) * (1 - 0.0)
-    step = 0 if t < 4 else 1 if t < 10 else 2 if t < 16 else 3 if t < 22 else 4
-    xs = [118, 310, 512, 734, 950]
-    for i, x in enumerate(xs):
-        L = T[f"s{i}on" if i == step else f"s{i}off"]
-        comp(cv, L, int(x - L.shape[1] / 2), int(1848 - L.shape[0] / 2), fa)
-    cv[1818:1820, 60:W - 60] += BLUE * 0.18 * fa
-    cv[1817:1821, 60:int(60 + (W - 120) * t / DUR)] += BLUE * 0.9 * fa
-    for (x, y, dx, dy) in ((36, 36, 1, 1), (W - 36, 36, -1, 1), (36, H - 36, 1, -1), (W - 36, H - 36, -1, -1)):   # corner ticks
-        cv2.line(cv, (x, y), (x + dx * 34, y), tuple(float(v) for v in BLUE * 0.6), 2, cv2.LINE_AA)
-        cv2.line(cv, (x, y), (x, y + dy * 34), tuple(float(v) for v in BLUE * 0.6), 2, cv2.LINE_AA)
+    draw_footer(cv, T, FT if FT is not None else t)
 
     # ---- finishing: flashes, vignette, grain, fades
     for t0 in (4.1, 20.75):
@@ -420,21 +480,44 @@ def render(t, A):
         if fl > .3: cv += BLUE / 255 * fl + fl * 0.35
     cv *= A["vig"]
     cv += cv2.resize(A["grain"][int(t * FPS) % 8], (W, H), interpolation=cv2.INTER_NEAREST)[..., None]
-    cv *= sstep(0, 0.5, t) * (1 - sstep(24.55, 25.0, t))
+    cv *= sstep(0, 0.5, t) * (1 - sstep(25.5, 26.0, t))
     return np.clip(cv, 0, 255).astype(np.uint8)
 
+class Tour:
+    def __init__(self):
+        self.cap = cv2.VideoCapture(f"{R}/source/mk8_reel_v3.mp4"); self.i = -1; self.f = None
+    def band(self, ft):
+        want = int(round((TOUR_SRC0 + clamp(ft - TOUR_T0, 0, TOUR_LEN)) * FPS))
+        if want < self.i or self.i < 0:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, want); self.i = want - 1
+        while self.i < want:
+            ok, f = self.cap.read(); self.i += 1
+            if ok: self.f = f
+        return self.f[BAND[0]:BAND[1]]
+
+def film_frame(ft, A, tour):
+    """film time -> frame: base animation, the close-up tour, and 0.5 s dissolves between them"""
+    base_t = ft if ft <= TOUR_T0 else TOUR_T0 if ft < TOUR_T1 else TOUR_T0 + (ft - TOUR_T1)
+    k = sstep(TOUR_T0 - 0.05, TOUR_T0 + 0.45, ft) * (1 - sstep(TOUR_T1 - 0.25, TOUR_T1 + 0.25, ft))
+    if k <= 0: return render(base_t, A, ft)
+    tf = render_tour(ft, A, tour.band(ft))
+    if k >= 1: return tf
+    return cv2.addWeighted(tf, k, render(base_t, A, ft), 1 - k, 0)
+
 if __name__ == "__main__":
-    A = load_assets()
+    A = load_assets(); tour = Tour()
     if "--still" in sys.argv:
         for v in sys.argv[sys.argv.index("--still") + 1:]:
-            cv2.imwrite(f"{R}/build/still_{float(v):05.2f}.png", render(float(v), A))
+            cv2.imwrite(f"{R}/build/still_{float(v):05.2f}.png", film_frame(float(v), A, tour))
         sys.exit()
     os.makedirs(f"{R}/out", exist_ok=True)
-    out = f"{R}/out/cigarette_machine_exploded_view.mp4"
+    out = f"{R}/out/mk8_exploded_view_reel.mp4"
+    subprocess.run([sys.executable, f"{R}/build/music.py", str(TOTAL), f"{R}/build/music.wav"], check=True)
     ff = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
-                           "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-pix_fmt", "yuv420p", "-movflags", "+faststart", out], stdin=subprocess.PIPE)
-    n = int(DUR * FPS)
+                           "-i", f"{R}/build/music.wav", "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-pix_fmt", "yuv420p",
+                           "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", out], stdin=subprocess.PIPE)
+    n = int(round(TOTAL * FPS))
     for i in range(n):
-        ff.stdin.write(render(i / FPS, A).tobytes())
-        if i % 60 == 0: print(f"{i}/{n}", flush=True)
+        ff.stdin.write(film_frame(i / FPS, A, tour).tobytes())
+        if i % 120 == 0: print(f"{i}/{n}", flush=True)
     ff.stdin.close(); ff.wait(); print("wrote", out)
